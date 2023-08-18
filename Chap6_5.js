@@ -1,27 +1,31 @@
-const frm = document.querySelector("form")
+const frm = document.querySelector("form") // obtém elementos da página
 const resp = document.querySelector("pre")
 
-const carros = []
+const carros = [] // declara vetor global
 
-frm.addEventListener("submit", (e)=>{
-    e.preventDefault()
-    const modelo = frm.inModelo.value
-    const preco = Number(frm.inPreco.value)
+frm.addEventListener("submit", (e)=>{ // escuta evento de submit do form
+    e.preventDefault()                // evita o envio do form
+    const modelo = frm.inModelo.value // obtém dados do form
+    const preco = Number(frm.inPreco.value) 
 
-    carros.push({modelo, preco})
+    carros.push({modelo, preco})  // adiciona dados ao vetor de objetos
 
-    frm.inModelo.value = ''
+    frm.inModelo.value = ''  // limpa campos do form
     frm.inPreco.value = ''
 
-    inModelo.focus()
+    inModelo.focus()  // posiciona o cursor no inModelo
+
+    //dispara um evento de click simulando um click real em btListar
     frm.btListar.dispatchEvent(new Event("click"))
 })
 
-frm.btListar.addEventListener("click", ()=>{
-    if (carros.length == 0){
+frm.btListar.addEventListener("click", ()=>{  //escuta o click em btListar
+    if (carros.length == 0){                 // se o tamanho do vetor for igual a zero
         alert('Não há carros na lista!')
         return
     }
+
+    //método reduce() concatena uma string, obtendo modelo e preço de cada veículo
     const lista = carros.reduce((acumulador, carro)=>
         acumulador + carro.modelo + "- R$: " + carro.preco.toFixed(2) + "\n", "" )
     
@@ -30,18 +34,19 @@ frm.btListar.addEventListener("click", ()=>{
 
 frm.btFiltrar.addEventListener("click", ()=>{
     const maximo = Number(prompt("Qual o valor máximo que o cliente deseja pagar?"))
-    if (maximo == 0){
-        return
-    }
+    if (maximo == 0){  // se não informou ou valor inválido
+        return         // ... retorna
+    } 
 
+    //cria um novo vetor com os objetos que atendem à condição de filtro
     const carrosFilter = carros.filter(carro => carro.preco <= maximo)
-    if (carrosFilter.length == 0){
+    if (carrosFilter.length == 0){   // se o tamanho do vetor filtrado é 0
         alert("Não há carros disponíveis com preço inferior ou igual ao solicitado!")
         return
     }
 
     let lista = ''
-    for(const carro of carrosFilter){
+    for(const carro of carrosFilter){  // percorre cada elemento de um array
         lista += `${carro.modelo} - R$: ${carro.preco.toFixed(2)}\n`
     }
     resp.innerText = `Carros até R$: ${maximo.toFixed(2)}\n${"-".repeat(40)}\n${lista}`
@@ -49,8 +54,8 @@ frm.btFiltrar.addEventListener("click", ()=>{
 
 frm.btSimular.addEventListener("click", ()=>{
     const desconto = Number(prompt("Qual o percentual de desconto?"))
-    if (desconto == 0 || isNaN(desconto)){
-        return
+    if (desconto == 0 || isNaN(desconto)){  //se não informou ou valor inválido
+        return                              // ...  retorna
     }
     const carrosDesc = carros.map(aux => ({
         modelo: aux.modelo,
@@ -58,7 +63,7 @@ frm.btSimular.addEventListener("click", ()=>{
     }))
 
     let lista = ""
-    for (const carro of carrosDesc){
+    for (const carro of carrosDesc){  //percorre cada elemento do array
         lista += `${carro.modelo} - R$: ${carro.preco.toFixed(2)}\n`
     }
     resp.innerText = `Carros com desconto: ${desconto}%\n${"-".repeat(40)}\n${lista}`
